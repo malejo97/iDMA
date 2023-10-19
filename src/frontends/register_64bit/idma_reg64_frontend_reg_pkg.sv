@@ -126,7 +126,7 @@ package idma_reg64_frontend_reg_pkg;
   } idma_reg64_frontend_id_e;
 
   // Register width information to check illegal writes
-  parameter logic [3:0] IDMA_REG64_FRONTEND_PERMIT [7] = '{
+  parameter logic [3:0] IDMA_REG64_FRONTEND_PERMIT [8] = '{
     4'b 1111, // index[0] IDMA_REG64_FRONTEND_SRC_ADDR
     4'b 1111, // index[1] IDMA_REG64_FRONTEND_DST_ADDR
     4'b 1111, // index[2] IDMA_REG64_FRONTEND_NUM_BYTES
