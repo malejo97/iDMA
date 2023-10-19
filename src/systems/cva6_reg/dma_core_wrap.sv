@@ -27,7 +27,9 @@ module dma_core_wrap #(
   parameter type         axi_mst_req_t    = logic,
   parameter type         axi_mst_rsp_t    = logic,
   parameter type         axi_slv_req_t    = logic,
-  parameter type         axi_slv_rsp_t    = logic
+  parameter type         axi_slv_rsp_t    = logic,
+  parameter logic [3:0]  AR_DEVICE_ID     = 24'd1,
+  parameter logic [3:0]  AW_DEVICE_ID     = 24'd1
 ) (
   input  logic          clk_i,
   input  logic          rst_ni,
@@ -37,6 +39,16 @@ module dma_core_wrap #(
   input  axi_slv_req_t  axi_slv_req_i,
   output axi_slv_rsp_t  axi_slv_rsp_o
 );
+
+    // Manually assign IOMMU-specific signals
+    // AW
+    assign axi_mst_req_o.aw.stream_id     = AW_DEVICE_ID;
+    assign axi_mst_req_o.aw.ss_id_valid   = 1'b0;
+    assign axi_mst_req_o.aw.substream_id  = 20'b0;
+    // AR
+    assign axi_mst_req_o.ar.stream_id     = AR_DEVICE_ID;
+    assign axi_mst_req_o.ar.ss_id_valid   = 1'b0;
+    assign axi_mst_req_o.ar.substream_id  = 20'b0;
 
   // local params
   localparam int unsigned DmaRegisterWidth = 32'd64;
@@ -277,12 +289,17 @@ module dma_core_wrap_intf #(
   parameter int unsigned MEM_SYS_DEPTH      = 32'd0,
   parameter bit          RAW_COUPLING_AVAIL =  1'b0,
   parameter bit          IS_TWO_D           =  1'b0
+
+  parameter type         axi_mst_req_t =    = logic,
+  parameter type         axi_mst_resp_t =   = logic,
+  parameter logic [3:0]  AR_DEVICE_ID       = 24'd1,
+  parameter logic [3:0]  AW_DEVICE_ID       = 24'd1
 ) (
-  input  logic   clk_i,
-  input  logic   rst_ni,
-  input  logic   testmode_i,
-  AXI_BUS.Master axi_master,
-  AXI_BUS.Slave  axi_slave
+  input  logic        clk_i,
+  input  logic        rst_ni,
+  input  logic        testmode_i,
+  AXI_BUS_MMU.Master  axi_master,
+  AXI_BUS.Slave       axi_slave
 );
 
   typedef logic [AXI_ADDR_WIDTH-1:0]     addr_t;
@@ -292,11 +309,20 @@ module dma_core_wrap_intf #(
   typedef logic [AXI_ID_WIDTH-1:0]       axi_id_t;
   typedef logic [AXI_SLV_ID_WIDTH-1:0]   axi_slv_id_t;
 
-  `AXI_TYPEDEF_ALL(axi_mst, addr_t, axi_id_t, data_t, strb_t, user_t)
-  axi_mst_req_t axi_mst_req;
-  axi_mst_resp_t axi_mst_resp;
+  axi_mst_req_t   axi_mst_req;
+  axi_mst_resp_t  axi_mst_resp;
   `AXI_ASSIGN_FROM_REQ(axi_master, axi_mst_req)
   `AXI_ASSIGN_TO_RESP(axi_mst_resp, axi_master)
+
+  // Manually assign IOMMU-specific signals
+  // AW
+  assign axi_master.aw_stream_id     = axi_mst_req.aw.stream_id;
+  assign axi_master.aw_ss_id_valid   = axi_mst_req.aw.ss_id_valid;
+  assign axi_master.aw_substream_id  = axi_mst_req.aw.substream_id;
+  // AR
+  assign axi_master.ar_stream_id     = axi_mst_req.ar.stream_id;
+  assign axi_master.ar_ss_id_valid   = axi_mst_req.ar.ss_id_valid;
+  assign axi_master.ar_substream_id  = axi_mst_req.ar.substream_id;
 
   `AXI_TYPEDEF_ALL(axi_slv, addr_t, axi_slv_id_t, data_t, strb_t, user_t)
   axi_slv_req_t axi_slv_req;
@@ -318,15 +344,17 @@ module dma_core_wrap_intf #(
     .axi_mst_req_t    ( axi_mst_req_t      ),
     .axi_mst_rsp_t    ( axi_mst_resp_t     ),
     .axi_slv_req_t    ( axi_slv_req_t      ),
-    .axi_slv_rsp_t    ( axi_slv_resp_t     )
+    .axi_slv_rsp_t    ( axi_slv_resp_t     ),
+    .AR_DEVICE_ID     ( AR_DEVICE_ID       ),
+    .AW_DEVICE_ID     ( AW_DEVICE_ID       )
   ) i_dma_core_wrap (
     .clk_i,
     .rst_ni,
     .testmode_i,
-    .axi_mst_req_o ( axi_mst_req  ),
-    .axi_mst_rsp_i ( axi_mst_resp ),
-    .axi_slv_req_i ( axi_slv_req  ),
-    .axi_slv_rsp_o ( axi_slv_resp )
+    .axi_mst_req_o    ( axi_mst_req  ),
+    .axi_mst_rsp_i    ( axi_mst_resp ),
+    .axi_slv_req_i    ( axi_slv_req  ),
+    .axi_slv_rsp_o    ( axi_slv_resp )
   );
 
 endmodule : dma_core_wrap_intf
