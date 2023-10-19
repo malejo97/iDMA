@@ -6,7 +6,7 @@
 // Tobias Senti <tsenti@student.ethz.ch>
 
 `include "axi/typedef.svh"
-// `include "idma/guard.svh"
+`include "idma/guard.svh"
 
 /// The iDMA backend implements an arbitrary 1D copy engine
 module idma_backend #(

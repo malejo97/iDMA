@@ -7,7 +7,7 @@
 
 `timescale 1ns/1ns
 `include "axi/typedef.svh"
-// `include "idma/typedef.svh"
+`include "idma/typedef.svh"
 
 module tb_idma_nd_backend import idma_pkg::*; #(
     parameter int unsigned BufferDepth         = 3,

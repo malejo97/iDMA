@@ -4,7 +4,7 @@
 //
 // Thomas Benz <tbenz@ethz.ch>
 
-// `include "idma/typedef.svh"
+`include "idma/typedef.svh"
 
 /// testbench driver tasks and model for the iDMA
 package idma_test;

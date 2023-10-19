@@ -6,7 +6,7 @@
 
 `include "register_interface/typedef.svh"
 `include "register_interface/assign.svh"
-// `include "idma/typedef.svh"
+`include "idma/typedef.svh"
 
 import idma_desc64_reg_pkg::IDMA_DESC64_DESC_ADDR_OFFSET;
 import idma_desc64_reg_pkg::IDMA_DESC64_STATUS_OFFSET;

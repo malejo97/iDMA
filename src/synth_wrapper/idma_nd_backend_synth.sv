@@ -6,7 +6,7 @@
 // Tobias Senti <tsenti@student.ethz.ch>
 
 `include "axi/typedef.svh"
-// `include "idma/typedef.svh"
+`include "idma/typedef.svh"
 
 /// Synthesis wrapper for the iDMA backend and the nd-midend combined.
 /// Unpacks all the interfaces to simple logic vectors

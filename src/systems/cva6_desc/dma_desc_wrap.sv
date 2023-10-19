@@ -6,7 +6,7 @@
 
 `include "axi/assign.svh"
 `include "axi/typedef.svh"
-// `include "idma/typedef.svh"
+`include "idma/typedef.svh"
 `include "register_interface/typedef.svh"
 `include "common_cells/registers.svh"
 

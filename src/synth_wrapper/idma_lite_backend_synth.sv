@@ -6,7 +6,7 @@
 // Tobias Senti <tsenti@student.ethz.ch>
 
 `include "axi/typedef.svh"
-// `include "idma/typedef.svh"
+`include "idma/typedef.svh"
 
 /// Synthesis wrapper for the iDMA backend. Unpacks all the interfaces to simple logic vectors
 module idma_lite_backend_synth #(

@@ -7,7 +7,7 @@
 
 `include "common_cells/registers.svh"
 `include "common_cells/assertions.svh"
-// `include "idma/guard.svh"
+`include "idma/guard.svh"
 
 /// Legalizes a generic 1D transfer according to the rules given by the
 /// AXI4 protocol. Bursts are cut at 4kiB boundaries and are a maximum of

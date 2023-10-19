@@ -5,7 +5,7 @@
 // Thomas Benz <tbenz@ethz.ch>
 
 `include "common_cells/registers.svh"
-// `include "idma/guard.svh"
+`include "idma/guard.svh"
 
 /// Handles AXI read and write error on the manager interface.
 /// Currently two modes are supported:
