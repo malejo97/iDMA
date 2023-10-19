@@ -296,8 +296,8 @@ module dma_core_wrap_intf #(
   parameter bit          RAW_COUPLING_AVAIL =  1'b0,
   parameter bit          IS_TWO_D           =  1'b0,
 
-  parameter type         axi_mst_req_t =    = logic,
-  parameter type         axi_mst_resp_t =   = logic,
+  parameter type         axi_mst_req_t      = logic,
+  parameter type         axi_mst_resp_t     = logic,
   parameter logic [3:0]  AR_DEVICE_ID       = 24'd1,
   parameter logic [3:0]  AW_DEVICE_ID       = 24'd1
 ) (
