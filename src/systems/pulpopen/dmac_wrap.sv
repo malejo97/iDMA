@@ -12,7 +12,7 @@
 
 `include "axi/assign.svh"
 `include "axi/typedef.svh"
-`include "idma/typedef.svh"
+// `include "idma/typedef.svh"
 `include "register_interface/typedef.svh"
 
 module dmac_wrap #(

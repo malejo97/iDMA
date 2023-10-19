@@ -97,6 +97,7 @@ module idma_reg64_frontend #(
         burst_req_o.dst_addr            = dma_reg2hw.dst_addr.q;
 
             // Current backend only supports one ID
+        // burst_req_o.opt.axi_id             = '0;
         burst_req_o.opt.axi_id             = '0;
             // DMA only supports incremental burst
         burst_req_o.opt.src.burst          = axi_pkg::BURST_INCR;
@@ -132,7 +133,7 @@ module idma_reg64_frontend #(
         burst_req_o.opt.beo.src_reduce_len = dma_reg2hw.conf.deburst.q;
         burst_req_o.opt.beo.dst_reduce_len = dma_reg2hw.conf.deburst.q;
 
-            // serialization no longer supported
+        // serialization no longer supported
         // burst_req_o.serialize   = dma_reg2hw.conf.serialize.q;
     end : hw_req_conv
 
@@ -155,7 +156,7 @@ module idma_reg64_frontend #(
         .clk_i,
         .rst_ni,
         .issue_i      ( issue             ),
-        .retire_i     ( trans_complete_i ),
+        .retire_i     ( trans_complete_i  ),
         .next_o       ( next_id           ),
         .completed_o  ( done_id           )
     );

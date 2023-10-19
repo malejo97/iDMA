@@ -92,7 +92,6 @@ module idma_reg64_frontend_reg_top #(
   logic next_id_re;
   logic [63:0] done_qs;
   logic done_re;
-
   logic ipsr_rip_qs;
   logic ipsr_rip_wd;
   logic ipsr_rip_we;

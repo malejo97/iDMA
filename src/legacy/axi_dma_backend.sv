@@ -4,8 +4,8 @@
 //
 // Michael Rogenmoser <michaero@ethz.ch>
 
-`include "idma/typedef.svh"
-`include "idma/guard.svh"
+// `include "idma/typedef.svh"
+// `include "idma/guard.svh"
 
 /// This is a wrapper for the new backend to emulate the old one
 module axi_dma_backend #(

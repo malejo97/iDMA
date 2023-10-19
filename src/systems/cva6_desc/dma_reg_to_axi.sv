@@ -5,7 +5,7 @@
 // Axel Vanoni <axvanoni@student.ethz.ch>
 
 `include "common_cells/registers.svh"
-`include "idma/guard.svh"
+// `include "idma/guard.svh"
 
 /// Hacky register interface to AXI converter
 module dma_reg_to_axi #(

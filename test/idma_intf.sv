@@ -4,7 +4,7 @@
 //
 // Thomas Benz <tbenz@ethz.ch>
 
-`include "idma/typedef.svh"
+// `include "idma/typedef.svh"
 
 /// The driver interface for the iDMA backend
 interface IDMA_DV #(

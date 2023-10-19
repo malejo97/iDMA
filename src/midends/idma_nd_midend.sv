@@ -5,7 +5,7 @@
 // Thomas Benz <tbenz@ethz.ch>
 
 `include "common_cells/registers.svh"
-`include "idma/guard.svh"
+// `include "idma/guard.svh"
 
 /// ND midend for the iDMA. This module takes an n-dimensional transfer and splits it into
 /// individual 1d transfers handed to the backend.

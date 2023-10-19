@@ -5,7 +5,7 @@
 // Thomas Benz <tbenz@ethz.ch>
 
 `include "common_cells/assertions.svh"
-`include "idma/guard.svh"
+// `include "idma/guard.svh"
 
 /// Optimal implementation of a stream FIFO based on the common cells modules.
 module idma_stream_fifo #(
