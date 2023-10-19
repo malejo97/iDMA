@@ -362,7 +362,7 @@ module idma_reg64_frontend_reg_top #(
   );
 
 
-  logic [6:0] addr_hit;
+  logic [7:0] addr_hit;
   always_comb begin
     addr_hit = '0;
     addr_hit[0] = (reg_addr == IDMA_REG64_FRONTEND_SRC_ADDR_OFFSET);
