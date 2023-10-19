@@ -294,7 +294,7 @@ module dma_core_wrap_intf #(
   parameter int unsigned NUM_AX_IN_FLIGHT   = 32'd0,
   parameter int unsigned MEM_SYS_DEPTH      = 32'd0,
   parameter bit          RAW_COUPLING_AVAIL =  1'b0,
-  parameter bit          IS_TWO_D           =  1'b0
+  parameter bit          IS_TWO_D           =  1'b0,
 
   parameter type         axi_mst_req_t =    = logic,
   parameter type         axi_mst_resp_t =   = logic,
