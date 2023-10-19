@@ -28,8 +28,8 @@ module dma_core_wrap #(
   parameter type         axi_mst_rsp_t    = logic,
   parameter type         axi_slv_req_t    = logic,
   parameter type         axi_slv_rsp_t    = logic,
-  parameter logic [3:0]  AR_DEVICE_ID     = 24'd1,
-  parameter logic [3:0]  AW_DEVICE_ID     = 24'd1
+  parameter logic [23:0] AR_DEVICE_ID     = 24'd1,
+  parameter logic [23:0] AW_DEVICE_ID     = 24'd1
 ) (
   input  logic          clk_i,
   input  logic          rst_ni,
@@ -258,8 +258,8 @@ module dma_core_wrap #(
     .protocol_rsp_t      ( axi_mst_rsp_t               ),
     .aw_chan_t           ( axi_mst_aw_chan_t           ),
     .ar_chan_t           ( axi_mst_ar_chan_t           ),
-    .AR_DEVICE_ID        ( AR_DEVICE_ID                ),
-    .AW_DEVICE_ID        ( AW_DEVICE_ID                )
+    .AR_DEVICE_ID        ( AR_DEVICE_ID[3:0]           ),
+    .AW_DEVICE_ID        ( AW_DEVICE_ID[3:0]           )
   ) i_idma_backend (
     .clk_i,
     .rst_ni,
@@ -300,8 +300,8 @@ module dma_core_wrap_intf #(
 
   parameter type         axi_mst_req_t      = logic,
   parameter type         axi_mst_resp_t     = logic,
-  parameter logic [3:0]  AR_DEVICE_ID       = 24'd1,
-  parameter logic [3:0]  AW_DEVICE_ID       = 24'd1
+  parameter logic [23:0] AR_DEVICE_ID       = 24'd1,
+  parameter logic [23:0] AW_DEVICE_ID       = 24'd1
 ) (
   input  logic        clk_i,
   input  logic        rst_ni,
