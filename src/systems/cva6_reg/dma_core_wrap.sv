@@ -37,7 +37,8 @@ module dma_core_wrap #(
   output axi_mst_req_t  axi_mst_req_o,
   input  axi_mst_rsp_t  axi_mst_rsp_i,
   input  axi_slv_req_t  axi_slv_req_i,
-  output axi_slv_rsp_t  axi_slv_rsp_o
+  output axi_slv_rsp_t  axi_slv_rsp_o,
+  output logic [1:0]    irq_o
 );
 
     // Manually assign IOMMU-specific signals
@@ -126,7 +127,12 @@ module dma_core_wrap #(
       .valid_o          ( be_valid_d        ),
       .ready_i          ( be_ready_d        ),
       .backend_idle_i   ( ~|idma_busy       ),
-      .trans_complete_i ( be_trans_complete )
+      .trans_complete_i ( be_trans_complete ),
+      .r_done_i         ( axi_mst_rsp_i.r_valid & axi_mst_rsp_i.r.last ),
+      .w_done_i         ( axi_mst_req_o.w_valid & axi_mst_req_o.w.last ),
+
+      // IRQ
+      .irq_o            ( irq_o             )
     );
 
     stream_fifo #(
@@ -299,7 +305,9 @@ module dma_core_wrap_intf #(
   input  logic        rst_ni,
   input  logic        testmode_i,
   AXI_BUS_MMU.Master  axi_master,
-  AXI_BUS.Slave       axi_slave
+  AXI_BUS.Slave       axi_slave,
+
+  output logic [1:0]  irq_o
 );
 
   typedef logic [AXI_ADDR_WIDTH-1:0]     addr_t;
@@ -354,7 +362,8 @@ module dma_core_wrap_intf #(
     .axi_mst_req_o    ( axi_mst_req  ),
     .axi_mst_rsp_i    ( axi_mst_resp ),
     .axi_slv_req_i    ( axi_slv_req  ),
-    .axi_slv_rsp_o    ( axi_slv_resp )
+    .axi_slv_rsp_o    ( axi_slv_resp ),
+    .irq_o            ( irq_o        )
   );
 
 endmodule : dma_core_wrap_intf
