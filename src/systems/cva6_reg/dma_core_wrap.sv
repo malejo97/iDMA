@@ -257,7 +257,9 @@ module dma_core_wrap #(
     .protocol_req_t      ( axi_mst_req_t               ),
     .protocol_rsp_t      ( axi_mst_rsp_t               ),
     .aw_chan_t           ( axi_mst_aw_chan_t           ),
-    .ar_chan_t           ( axi_mst_ar_chan_t           )
+    .ar_chan_t           ( axi_mst_ar_chan_t           ),
+    .AR_DEVICE_ID        ( AR_DEVICE_ID                ),
+    .AW_DEVICE_ID        ( AW_DEVICE_ID                )
   ) i_idma_backend (
     .clk_i,
     .rst_ni,
