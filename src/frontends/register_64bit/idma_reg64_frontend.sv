@@ -28,7 +28,12 @@ module idma_reg64_frontend #(
     input  logic          r_done_i,
     input  logic          w_done_i,
 
-    output logic [1:0]    irq_o
+    // To interface register
+    input  logic          btnu_i,
+    input  logic          btnd_i,
+    input  logic          btnl_i,
+    input  logic          btnr_i,
+    input  logic          btnc_i
 );
 
     localparam int unsigned DmaRegisterWidth = 64;
@@ -140,14 +145,17 @@ module idma_reg64_frontend #(
     // only increment issue counter if we have a valid transfer
     assign issue = ready_i && valid_o;
 
-    // Set IP bits upon read/write completion
-    assign dma_hw2reg.ipsr.rip.de   = r_done_i;
-    assign dma_hw2reg.ipsr.rip.d    = r_done_i;
-    assign irq_o[0]                 = dma_reg2hw.ipsr.rip.q;
-
-    assign dma_hw2reg.ipsr.wip.de   = w_done_i;
-    assign dma_hw2reg.ipsr.wip.d    = w_done_i;
-    assign irq_o[1]                 = dma_reg2hw.ipsr.wip.q;
+    // Assign interface register with button signals
+    assign dma_hw2reg.intf.btnu.d   = btnu_i;
+    assign dma_hw2reg.intf.btnd.d   = btnd_i;
+    assign dma_hw2reg.intf.btnl.d   = btnl_i;
+    assign dma_hw2reg.intf.btnr.d   = btnr_i;
+    assign dma_hw2reg.intf.btnc.d   = btnc_i;
+    assign dma_hw2reg.intf.btnu.de  = btnu_i;
+    assign dma_hw2reg.intf.btnd.de  = btnd_i;
+    assign dma_hw2reg.intf.btnl.de  = btnl_i;
+    assign dma_hw2reg.intf.btnr.de  = btnr_i;
+    assign dma_hw2reg.intf.btnc.de  = btnc_i;
 
     // transfer id generator
     idma_transfer_id_gen #(

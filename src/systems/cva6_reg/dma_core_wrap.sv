@@ -36,7 +36,12 @@ module dma_core_wrap #(
   AXI_BUS_MMU.Master  axi_master,
   AXI_BUS.Slave       axi_slave,
 
-  output logic [1:0]  irq_o
+  // To interface register
+  input  logic        btnu_i,
+  input  logic        btnd_i,
+  input  logic        btnl_i,
+  input  logic        btnr_i,
+  input  logic        btnc_i
 );
   localparam int unsigned DmaRegisterWidth = 64;
 
@@ -129,8 +134,11 @@ module dma_core_wrap #(
     .r_done_i         ( axi_mst_resp.r_valid & axi_mst_resp.r.last ),
     .w_done_i         ( axi_mst_req.w_valid & axi_mst_req.w.last   ),
 
-    // IRQ
-    .irq_o            ( irq_o             )
+    .btnu_i           ( btnu_i            ),
+    .btnd_i           ( btnd_i            ),
+    .btnl_i           ( btnl_i            ),
+    .btnr_i           ( btnr_i            ),
+    .btnc_i           ( btnc_i            )
   );
 
   idma_backend #(

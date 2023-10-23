@@ -92,12 +92,21 @@ module idma_reg64_frontend_reg_top #(
   logic next_id_re;
   logic [63:0] done_qs;
   logic done_re;
-  logic ipsr_rip_qs;
-  logic ipsr_rip_wd;
-  logic ipsr_rip_we;
-  logic ipsr_wip_qs;
-  logic ipsr_wip_wd;
-  logic ipsr_wip_we;
+  logic ipsr_btnu_qs;
+  logic ipsr_btnu_wd;
+  logic ipsr_btnu_we;
+  logic ipsr_btnd_qs;
+  logic ipsr_btnd_wd;
+  logic ipsr_btnd_we;
+  logic ipsr_btnl_qs;
+  logic ipsr_btnl_wd;
+  logic ipsr_btnl_we;
+  logic ipsr_btnr_qs;
+  logic ipsr_btnr_wd;
+  logic ipsr_btnr_we;
+  logic ipsr_btnc_qs;
+  logic ipsr_btnc_wd;
+  logic ipsr_btnc_we;
 
   // Register instances
   // R[src_addr]: V(False)
@@ -308,9 +317,9 @@ module idma_reg64_frontend_reg_top #(
     .qs     (done_qs)
   );
 
-  // R[ipsr]: V(False)
+  // R[intf]: V(False)
 
-  //   F[rip]: 0:0
+  //   F[btnu]: 0:0
   prim_subreg #(
     .DW      (1),
     .SWACCESS("W1C"),
@@ -320,22 +329,22 @@ module idma_reg64_frontend_reg_top #(
     .rst_ni  (rst_ni  ),
 
     // from register interface
-    .we     (ipsr_rip_we),
-    .wd     (ipsr_rip_wd),
+    .we     (ipsr_btnu_we),
+    .wd     (ipsr_btnu_wd),
 
     // from internal hardware
-    .de     (hw2reg.ipsr.rip.de),
-    .d      (hw2reg.ipsr.rip.d ),
+    .de     (hw2reg.intf.btnu.de),
+    .d      (hw2reg.intf.btnu.d ),
 
     // to internal hardware
     .qe     (),
-    .q      (reg2hw.ipsr.rip.q ),
+    .q      (),
 
     // to register interface (read)
-    .qs     (ipsr_rip_qs)
+    .qs     (ipsr_btnu_qs)
   );
 
-  //   F[wip]: 1:1
+  //   F[btnd]: 1:1
   prim_subreg #(
     .DW      (1),
     .SWACCESS("W1C"),
@@ -345,19 +354,94 @@ module idma_reg64_frontend_reg_top #(
     .rst_ni  (rst_ni  ),
 
     // from register interface
-    .we     (ipsr_wip_we),
-    .wd     (ipsr_wip_wd),
+    .we     (ipsr_btnd_we),
+    .wd     (ipsr_btnd_wd),
 
     // from internal hardware
-    .de     (hw2reg.ipsr.wip.de),
-    .d      (hw2reg.ipsr.wip.d ),
+    .de     (hw2reg.intf.btnd.de),
+    .d      (hw2reg.intf.btnd.d ),
 
     // to internal hardware
     .qe     (),
-    .q      (reg2hw.ipsr.wip.q ),
+    .q      (),
 
     // to register interface (read)
-    .qs     (ipsr_wip_qs)
+    .qs     (ipsr_btnd_qs)
+  );
+
+  //   F[btnl]: 0:0
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("W1C"),
+    .RESVAL  (1'h0)
+  ) u_ipsr_rd (
+    .clk_i   (clk_i   ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (ipsr_btnl_we),
+    .wd     (ipsr_btnl_wd),
+
+    // from internal hardware
+    .de     (hw2reg.intf.btnl.de),
+    .d      (hw2reg.intf.btnl.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (),
+
+    // to register interface (read)
+    .qs     (ipsr_btnl_qs)
+  );
+
+  //   F[btnr]: 1:1
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("W1C"),
+    .RESVAL  (1'h0)
+  ) u_ipsr_wr (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (ipsr_btnr_we),
+    .wd     (ipsr_btnr_wd),
+
+    // from internal hardware
+    .de     (hw2reg.intf.btnr.de),
+    .d      (hw2reg.intf.btnr.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (),
+
+    // to register interface (read)
+    .qs     (ipsr_btnr_qs)
+  );
+
+  //   F[btnc]: 1:1
+  prim_subreg #(
+    .DW      (1),
+    .SWACCESS("W1C"),
+    .RESVAL  (1'h0)
+  ) u_ipsr_wr (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (ipsr_btnc_we),
+    .wd     (ipsr_btnc_wd),
+
+    // from internal hardware
+    .de     (hw2reg.intf.btnc.de),
+    .d      (hw2reg.intf.btnc.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (),
+
+    // to register interface (read)
+    .qs     (ipsr_btnc_qs)
   );
 
 
@@ -371,10 +455,10 @@ module idma_reg64_frontend_reg_top #(
     addr_hit[4] = (reg_addr == IDMA_REG64_FRONTEND_STATUS_OFFSET);
     addr_hit[5] = (reg_addr == IDMA_REG64_FRONTEND_NEXT_ID_OFFSET);
     addr_hit[6] = (reg_addr == IDMA_REG64_FRONTEND_DONE_OFFSET);
-    addr_hit[7] = (reg_addr == IDMA_REG64_FRONTEND_IPSR_OFFSET);
+    addr_hit[7] = (reg_addr == IDMA_REG64_FRONTEND_INTF_OFFSET);
   end
 
-  assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0 ;
+  assign addrmiss = (reg_re || reg_we) ? ~|addr_hit : 1'b0;
 
   // Check sub-word write is permitted
   always_comb begin
@@ -413,11 +497,20 @@ module idma_reg64_frontend_reg_top #(
 
   assign done_re = addr_hit[6] & reg_re & !reg_error;
 
-  assign ipsr_rip_we = addr_hit[7] & reg_we & !reg_error;
-  assign ipsr_rip_wd = reg_wdata[0];
+  assign ipsr_btnu_we = addr_hit[7] & reg_we & !reg_error;
+  assign ipsr_btnu_wd = reg_wdata[0];
 
-  assign ipsr_wip_we = addr_hit[7] & reg_we & !reg_error;
-  assign ipsr_wip_wd = reg_wdata[1];
+  assign ipsr_btnd_we = addr_hit[7] & reg_we & !reg_error;
+  assign ipsr_btnd_wd = reg_wdata[1];
+
+  assign ipsr_btnl_we = addr_hit[7] & reg_we & !reg_error;
+  assign ipsr_btnl_wd = reg_wdata[2];
+
+  assign ipsr_btnr_we = addr_hit[7] & reg_we & !reg_error;
+  assign ipsr_btnr_wd = reg_wdata[3];
+
+  assign ipsr_btnc_we = addr_hit[7] & reg_we & !reg_error;
+  assign ipsr_btnc_wd = reg_wdata[4];
 
   // Read data return
   always_comb begin
@@ -454,8 +547,11 @@ module idma_reg64_frontend_reg_top #(
       end
 
       addr_hit[7]: begin
-        reg_rdata_next[0] = ipsr_rip_qs;
-        reg_rdata_next[1] = ipsr_wip_qs;
+        reg_rdata_next[0] = ipsr_btnu_qs;
+        reg_rdata_next[1] = ipsr_btnd_qs;
+        reg_rdata_next[2] = ipsr_btnl_qs;
+        reg_rdata_next[3] = ipsr_btnr_qs;
+        reg_rdata_next[4] = ipsr_btnc_qs;
       end
 
       default: begin

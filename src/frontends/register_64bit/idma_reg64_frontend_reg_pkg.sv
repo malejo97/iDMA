@@ -48,15 +48,6 @@ package idma_reg64_frontend_reg_pkg;
   } idma_reg64_frontend_reg2hw_done_reg_t;
 
   typedef struct packed {
-    struct packed {
-      logic        q;
-    } rip;
-    struct packed {
-      logic        q;
-    } wip;
-  } idma_reg64_frontend_reg2hw_ipsr_reg_t;
-
-  typedef struct packed {
     logic        d;
   } idma_reg64_frontend_hw2reg_status_reg_t;
 
@@ -72,12 +63,24 @@ package idma_reg64_frontend_reg_pkg;
     struct packed {
       logic        de;
       logic        d;
-    } rip;
+    } btnu;
     struct packed {
       logic        de;
       logic        d;
-    } wip;
-  } idma_reg64_frontend_hw2reg_ipsr_reg_t;
+    } btnd;
+    struct packed {
+      logic        de;
+      logic        d;
+    } btnl;
+    struct packed {
+      logic        de;
+      logic        d;
+    } btnr;
+    struct packed {
+      logic        de;
+      logic        d;
+    } btnc;
+  } idma_reg64_frontend_hw2reg_intf_reg_t;
 
   // Register -> HW type
   typedef struct packed {
@@ -87,7 +90,6 @@ package idma_reg64_frontend_reg_pkg;
     idma_reg64_frontend_reg2hw_conf_reg_t conf; // [132:130]
     idma_reg64_frontend_reg2hw_next_id_reg_t next_id; // [129:65]
     idma_reg64_frontend_reg2hw_done_reg_t done; // [64:0]
-    idma_reg64_frontend_reg2hw_ipsr_reg_t ipsr;
   } idma_reg64_frontend_reg2hw_t;
 
   // HW -> register type
@@ -95,7 +97,7 @@ package idma_reg64_frontend_reg_pkg;
     idma_reg64_frontend_hw2reg_status_reg_t status; // [128:128]
     idma_reg64_frontend_hw2reg_next_id_reg_t next_id; // [127:64]
     idma_reg64_frontend_hw2reg_done_reg_t done; // [63:0]
-    idma_reg64_frontend_hw2reg_ipsr_reg_t ipsr;
+    idma_reg64_frontend_hw2reg_intf_reg_t intf;
   } idma_reg64_frontend_hw2reg_t;
 
   // Register offsets
@@ -106,7 +108,7 @@ package idma_reg64_frontend_reg_pkg;
   parameter logic [BlockAw-1:0] IDMA_REG64_FRONTEND_STATUS_OFFSET = 6'h 20;
   parameter logic [BlockAw-1:0] IDMA_REG64_FRONTEND_NEXT_ID_OFFSET = 6'h 28;
   parameter logic [BlockAw-1:0] IDMA_REG64_FRONTEND_DONE_OFFSET = 6'h 30;
-  parameter logic [BlockAw-1:0] IDMA_REG64_FRONTEND_IPSR_OFFSET = 6'h 38;
+  parameter logic [BlockAw-1:0] IDMA_REG64_FRONTEND_INTF_OFFSET = 6'h 38;
 
   // Reset values for hwext registers and their fields
   parameter logic [0:0] IDMA_REG64_FRONTEND_STATUS_RESVAL = 1'h 0;
@@ -122,7 +124,7 @@ package idma_reg64_frontend_reg_pkg;
     IDMA_REG64_FRONTEND_STATUS,
     IDMA_REG64_FRONTEND_NEXT_ID,
     IDMA_REG64_FRONTEND_DONE,
-    IDMA_REG64_FRONTEND_IPSR
+    IDMA_REG64_FRONTEND_INTF
   } idma_reg64_frontend_id_e;
 
   // Register width information to check illegal writes
@@ -134,7 +136,7 @@ package idma_reg64_frontend_reg_pkg;
     4'b 0001, // index[4] IDMA_REG64_FRONTEND_STATUS
     4'b 1111, // index[5] IDMA_REG64_FRONTEND_NEXT_ID
     4'b 1111, // index[6] IDMA_REG64_FRONTEND_DONE
-    4'b 0001  // index[7] IDMA_REG64_FRONTEND_IPSR
+    4'b 0001  // index[7] IDMA_REG64_FRONTEND_INTF
   };
 
 endpackage
