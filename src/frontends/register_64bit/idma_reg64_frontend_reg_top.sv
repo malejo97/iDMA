@@ -449,7 +449,7 @@ module idma_reg64_frontend_reg_top #(
     .DW      (8),
     .SWACCESS("W1C"),
     .RESVAL  (1'h0)
-  ) u_intf_btnc (
+  ) u_intf_sw (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
 
