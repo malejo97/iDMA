@@ -107,6 +107,9 @@ module idma_reg64_frontend_reg_top #(
   logic intf_btnc_qs;
   logic intf_btnc_wd;
   logic intf_btnc_we;
+  logic intf_sw_qs;
+  logic intf_sw_wd;
+  logic intf_sw_we;
 
   // Register instances
   // R[src_addr]: V(False)
