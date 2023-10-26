@@ -41,7 +41,9 @@ module dma_core_wrap #(
   input  logic        btnd_i,
   input  logic        btnl_i,
   input  logic        btnr_i,
-  input  logic        btnc_i
+  input  logic        btnc_i,
+
+  input  logic [7:0]  switches_i
 );
   localparam int unsigned DmaRegisterWidth = 64;
 
@@ -138,7 +140,9 @@ module dma_core_wrap #(
     .btnd_i           ( btnd_i            ),
     .btnl_i           ( btnl_i            ),
     .btnr_i           ( btnr_i            ),
-    .btnc_i           ( btnc_i            )
+    .btnc_i           ( btnc_i            ),
+
+    .switches_i       ( switches_i        )
   );
 
   idma_backend #(

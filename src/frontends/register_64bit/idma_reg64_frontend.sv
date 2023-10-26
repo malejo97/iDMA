@@ -33,7 +33,9 @@ module idma_reg64_frontend #(
     input  logic          btnd_i,
     input  logic          btnl_i,
     input  logic          btnr_i,
-    input  logic          btnc_i
+    input  logic          btnc_i,
+
+    input  logic [7:0]    switches_i
 );
 
     localparam int unsigned DmaRegisterWidth = 64;
@@ -156,6 +158,10 @@ module idma_reg64_frontend #(
     assign dma_hw2reg.intf.btnl.de  = btnl_i;
     assign dma_hw2reg.intf.btnr.de  = btnr_i;
     assign dma_hw2reg.intf.btnc.de  = btnc_i;
+
+    // Assign switches
+    assign dma_hw2reg.intf.sw.d     = switches_i;
+    assign dma_hw2reg.intf.sw.de    = |(switches_i);
 
     // transfer id generator
     idma_transfer_id_gen #(

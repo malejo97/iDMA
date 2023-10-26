@@ -80,6 +80,10 @@ package idma_reg64_frontend_reg_pkg;
       logic        de;
       logic        d;
     } btnc;
+    struct packed {
+      logic        de;
+      logic [7:0]  d;
+    } sw;
   } idma_reg64_frontend_hw2reg_intf_reg_t;
 
   // Register -> HW type
@@ -136,7 +140,7 @@ package idma_reg64_frontend_reg_pkg;
     4'b 0001, // index[4] IDMA_REG64_FRONTEND_STATUS
     4'b 1111, // index[5] IDMA_REG64_FRONTEND_NEXT_ID
     4'b 1111, // index[6] IDMA_REG64_FRONTEND_DONE
-    4'b 0001  // index[7] IDMA_REG64_FRONTEND_INTF
+    4'b 0011  // index[7] IDMA_REG64_FRONTEND_INTF
   };
 
 endpackage

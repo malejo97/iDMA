@@ -444,6 +444,31 @@ module idma_reg64_frontend_reg_top #(
     .qs     (intf_btnc_qs)
   );
 
+  //   F[sw]: 1:1
+  prim_subreg #(
+    .DW      (8),
+    .SWACCESS("W1C"),
+    .RESVAL  (1'h0)
+  ) u_intf_btnc (
+    .clk_i   (clk_i    ),
+    .rst_ni  (rst_ni  ),
+
+    // from register interface
+    .we     (intf_sw_we),
+    .wd     (intf_sw_wd),
+
+    // from internal hardware
+    .de     (hw2reg.intf.sw.de),
+    .d      (hw2reg.intf.sw.d ),
+
+    // to internal hardware
+    .qe     (),
+    .q      (),
+
+    // to register interface (read)
+    .qs     (intf_sw_qs)
+  );
+
 
   logic [7:0] addr_hit;
   always_comb begin
@@ -512,6 +537,9 @@ module idma_reg64_frontend_reg_top #(
   assign intf_btnc_we = addr_hit[7] & reg_we & !reg_error;
   assign intf_btnc_wd = reg_wdata[4];
 
+  assign intf_sw_we = addr_hit[7] & reg_we & !reg_error;
+  assign intf_sw_wd = reg_wdata[12:5];
+
   // Read data return
   always_comb begin
     reg_rdata_next = '0;
@@ -547,11 +575,12 @@ module idma_reg64_frontend_reg_top #(
       end
 
       addr_hit[7]: begin
-        reg_rdata_next[0] = intf_btnu_qs;
-        reg_rdata_next[1] = intf_btnd_qs;
-        reg_rdata_next[2] = intf_btnl_qs;
-        reg_rdata_next[3] = intf_btnr_qs;
-        reg_rdata_next[4] = intf_btnc_qs;
+        reg_rdata_next[0]     = intf_btnu_qs;
+        reg_rdata_next[1]     = intf_btnd_qs;
+        reg_rdata_next[2]     = intf_btnl_qs;
+        reg_rdata_next[3]     = intf_btnr_qs;
+        reg_rdata_next[4]     = intf_btnc_qs;
+        reg_rdata_next[12:5]  = intf_sw_qs;
       end
 
       default: begin
