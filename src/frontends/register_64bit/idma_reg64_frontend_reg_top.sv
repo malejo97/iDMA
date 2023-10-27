@@ -107,8 +107,8 @@ module idma_reg64_frontend_reg_top #(
   logic intf_btnc_qs;
   logic intf_btnc_wd;
   logic intf_btnc_we;
-  logic intf_sw_qs;
-  logic intf_sw_wd;
+  logic [7:0] intf_sw_qs;
+  logic [7:0] intf_sw_wd;
   logic intf_sw_we;
 
   // Register instances
@@ -451,7 +451,7 @@ module idma_reg64_frontend_reg_top #(
   prim_subreg #(
     .DW      (8),
     .SWACCESS("W1C"),
-    .RESVAL  (1'h0)
+    .RESVAL  (8'h0)
   ) u_intf_sw (
     .clk_i   (clk_i    ),
     .rst_ni  (rst_ni  ),
