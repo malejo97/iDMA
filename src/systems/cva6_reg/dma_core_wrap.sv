@@ -14,20 +14,21 @@
 `include "register_interface/typedef.svh"
 
 module dma_core_wrap #(
-  parameter int unsigned AxiAddrWidth     = 32'd0,
-  parameter int unsigned AxiDataWidth     = 32'd0,
-  parameter int unsigned AxiIdWidth       = 32'd0,
-  parameter int unsigned AxiUserWidth     = 32'd0,
-  parameter int unsigned AxiSlvIdWidth    = 32'd0,
-  parameter int unsigned NumAxInFlight    = 32'd0,
-  parameter int unsigned MemSysDepth      = 32'd0,
-  parameter int unsigned JobFifoDepth     = 32'd0,
-  parameter bit          RAWCouplingAvail = 32'd0,
-  parameter bit          IsTwoD           = 32'd0,
-  parameter type         axi_mst_req_t    = logic,
-  parameter type         axi_mst_rsp_t    = logic,
-  parameter type         axi_slv_req_t    = logic,
-  parameter type         axi_slv_rsp_t    = logic
+  parameter int unsigned              AxiAddrWidth     = 32'd0,
+  parameter int unsigned              AxiDataWidth     = 32'd0,
+  parameter int unsigned              AxiIdWidth       = 32'd0,
+  parameter int unsigned              AxiUserWidth     = 32'd0,
+  parameter int unsigned              AxiSlvIdWidth    = 32'd0,
+  parameter int unsigned              NumAxInFlight    = 32'd0,
+  parameter int unsigned              MemSysDepth      = 32'd0,
+  parameter int unsigned              JobFifoDepth     = 32'd0,
+  parameter bit                       RAWCouplingAvail = 32'd0,
+  parameter bit                       IsTwoD           = 32'd0,
+  parameter type                      axi_mst_req_t    = logic,
+  parameter type                      axi_mst_rsp_t    = logic,
+  parameter type                      axi_slv_req_t    = logic,
+  parameter type                      axi_slv_rsp_t    = logic,
+  parameter logic [(AxiIdWidth-1):0]  AxID             = 0
 ) (
   input  logic          clk_i,
   input  logic          rst_ni,
@@ -43,12 +44,12 @@ module dma_core_wrap #(
   localparam int unsigned NumDim           = 32'd2;
   localparam int unsigned TFLenWidth       = AxiAddrWidth;
 
-  typedef logic [AxiDataWidth-1:0]     data_t;
-  typedef logic [AxiDataWidth/8-1:0]   strb_t;
   typedef logic [AxiAddrWidth-1:0]     addr_t;
+  typedef logic [AxiDataWidth-1:0]     data_t;
+  typedef logic [(AxiDataWidth/8)-1:0] strb_t;
+  typedef logic [AxiUserWidth-1:0]     axi_user_t;
   typedef logic [AxiIdWidth-1:0]       axi_id_t;
   typedef logic [AxiSlvIdWidth-1:0]    axi_slv_id_t;
-  typedef logic [AxiUserWidth-1:0]     axi_user_t;
 
   // iDMA struct definitions
   typedef logic [TFLenWidth-1:0]  tf_len_t;
@@ -102,7 +103,9 @@ module dma_core_wrap #(
     idma_reg64_frontend #(
       .dma_regs_req_t  ( dma_regs_req_t ),
       .dma_regs_rsp_t  ( dma_regs_rsp_t ),
-      .burst_req_t     ( idma_req_t     )
+      .burst_req_t     ( idma_req_t     ),
+      .AxiIdWidth      ( AxiIdWidth     ),
+      .AxID            ( AxID           )
     ) i_dma_frontend (
       .clk_i,
       .rst_ni,
@@ -267,22 +270,25 @@ endmodule : dma_core_wrap
 
 
 module dma_core_wrap_intf #(
-  parameter int unsigned AXI_ADDR_WIDTH     = 32'd0,
-  parameter int unsigned AXI_DATA_WIDTH     = 32'd0,
-  parameter int unsigned AXI_USER_WIDTH     = 32'd0,
-  parameter int unsigned AXI_ID_WIDTH       = 32'd0,
-  parameter int unsigned AXI_SLV_ID_WIDTH   = 32'd0,
-  parameter int unsigned JOB_FIFO_DEPTH     = 32'd0,
-  parameter int unsigned NUM_AX_IN_FLIGHT   = 32'd0,
-  parameter int unsigned MEM_SYS_DEPTH      = 32'd0,
-  parameter bit          RAW_COUPLING_AVAIL =  1'b0,
-  parameter bit          IS_TWO_D           =  1'b0
+  parameter int unsigned               AXI_ADDR_WIDTH     = 32'd0,
+  parameter int unsigned               AXI_DATA_WIDTH     = 32'd0,
+  parameter int unsigned               AXI_USER_WIDTH     = 32'd0,
+  parameter int unsigned               AXI_ID_WIDTH       = 32'd0,
+  parameter int unsigned               AXI_SLV_ID_WIDTH   = 32'd0,
+  parameter int unsigned               JOB_FIFO_DEPTH     = 32'd0,
+  parameter int unsigned               NUM_AX_IN_FLIGHT   = 32'd0,
+  parameter int unsigned               MEM_SYS_DEPTH      = 32'd0,
+  parameter bit                        RAW_COUPLING_AVAIL =  1'b0,
+  parameter bit                        IS_TWO_D           =  1'b0,
+
+  parameter logic [23:0]               DEVICE_ID          = 24'd1,
+  parameter logic [(AXI_ID_WIDTH-1):0] AxID               = 0
 ) (
-  input  logic   clk_i,
-  input  logic   rst_ni,
-  input  logic   testmode_i,
-  AXI_BUS.Master axi_master,
-  AXI_BUS.Slave  axi_slave
+  input  logic         clk_i,
+  input  logic         rst_ni,
+  input  logic         testmode_i,
+  AXI_BUS_IOMMU.Master axi_master,
+  AXI_BUS.Slave        axi_slave
 );
 
   typedef logic [AXI_ADDR_WIDTH-1:0]     addr_t;
@@ -304,11 +310,21 @@ module dma_core_wrap_intf #(
   `AXI_ASSIGN_TO_REQ(axi_slv_req, axi_slave)
   `AXI_ASSIGN_FROM_RESP(axi_slave, axi_slv_resp)
 
+  // Manually assign IOMMU-related signals
+  // AW
+  assign axi_master.aw_stream_id     = DEVICE_ID;
+  assign axi_master.aw_ss_id_valid   = 1'b0;
+  assign axi_master.aw_substream_id  = 20'b0;
+  // AR
+  assign axi_master.ar_stream_id     = DEVICE_ID;
+  assign axi_master.ar_ss_id_valid   = 1'b0;
+  assign axi_master.ar_substream_id  = 20'b0;
+
   dma_core_wrap #(
     .AxiAddrWidth     ( AXI_ADDR_WIDTH     ),
     .AxiDataWidth     ( AXI_DATA_WIDTH     ),
-    .AxiIdWidth       ( AXI_USER_WIDTH     ),
-    .AxiUserWidth     ( AXI_ID_WIDTH       ),
+    .AxiUserWidth     ( AXI_USER_WIDTH     ),
+    .AxiIdWidth       ( AXI_ID_WIDTH       ),
     .AxiSlvIdWidth    ( AXI_SLV_ID_WIDTH   ),
     .JobFifoDepth     ( JOB_FIFO_DEPTH     ),
     .NumAxInFlight    ( NUM_AX_IN_FLIGHT   ),
@@ -318,7 +334,8 @@ module dma_core_wrap_intf #(
     .axi_mst_req_t    ( axi_mst_req_t      ),
     .axi_mst_rsp_t    ( axi_mst_resp_t     ),
     .axi_slv_req_t    ( axi_slv_req_t      ),
-    .axi_slv_rsp_t    ( axi_slv_resp_t     )
+    .axi_slv_rsp_t    ( axi_slv_resp_t     ),
+    .AxID             ( AxID               )
   ) i_dma_core_wrap (
     .clk_i,
     .rst_ni,

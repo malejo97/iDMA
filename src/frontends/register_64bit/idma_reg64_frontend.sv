@@ -12,7 +12,11 @@ module idma_reg64_frontend #(
     /// register_interface response type
     parameter type          dma_regs_rsp_t   = logic,
     /// dma burst request type
-    parameter type          burst_req_t      = logic
+    parameter type          burst_req_t      = logic,
+    /// AXI ID width
+    parameter int unsigned  AxiIdWidth       = 32'd0,
+    /// AXI AxID
+    parameter logic [(AxiIdWidth-1):0] AxID  = 0
 ) (
     input  logic          clk_i,
     input  logic          rst_ni,
@@ -93,7 +97,7 @@ module idma_reg64_frontend #(
         burst_req_o.dst_addr            = dma_reg2hw.dst_addr.q;
 
             // Current backend only supports one ID
-        burst_req_o.opt.axi_id             = '0;
+        burst_req_o.opt.axi_id             = AxID;
             // DMA only supports incremental burst
         burst_req_o.opt.src.burst          = axi_pkg::BURST_INCR;
             // this frontend currently does not support cache variations
