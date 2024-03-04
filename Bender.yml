@@ -94,6 +94,7 @@ sources:
       - src/synth_wrapper/idma_lite_backend_synth.sv
       - src/synth_wrapper/idma_obi_backend_synth.sv
       - src/synth_wrapper/idma_nd_backend_synth.sv
+      - src/systems/cva6_reg/dma_core_wrap.sv
 
   - target: test
     defines:
