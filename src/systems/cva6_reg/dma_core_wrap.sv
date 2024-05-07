@@ -22,6 +22,7 @@ module dma_core_wrap #(
   parameter int unsigned              NumAxInFlight    = 32'd0,
   parameter int unsigned              MemSysDepth      = 32'd0,
   parameter int unsigned              JobFifoDepth     = 32'd0,
+  parameter int unsigned              BufferDepth      = 32'h3, // Default = 3
   parameter bit                       RAWCouplingAvail = 32'd0,
   parameter bit                       IsTwoD           = 32'd0,
   parameter type                      axi_mst_req_t    = logic,
@@ -227,7 +228,7 @@ module dma_core_wrap #(
     .UserWidth           ( AxiUserWidth                ),
     .AxiIdWidth          ( AxiIdWidth                  ),
     .NumAxInFlight       ( NumAxInFlight               ),
-    .BufferDepth         ( 3                           ),
+    .BufferDepth         ( BufferDepth                 ),
     .TFLenWidth          ( TFLenWidth                  ),
     .RAWCouplingAvail    ( RAWCouplingAvail            ),
     .MaskInvalidData     ( 1'b0                        ),
@@ -278,16 +279,18 @@ module dma_core_wrap_intf #(
   parameter int unsigned               JOB_FIFO_DEPTH     = 32'd0,
   parameter int unsigned               NUM_AX_IN_FLIGHT   = 32'd0,
   parameter int unsigned               MEM_SYS_DEPTH      = 32'd0,
+  parameter int unsigned               BUFFER_DEPTH       = 32'h3, // Default = 3
   parameter bit                        RAW_COUPLING_AVAIL =  1'b0,
   parameter bit                        IS_TWO_D           =  1'b0,
 
-  parameter logic [23:0]               DEVICE_ID          = 24'd1,
-  parameter logic [(AXI_ID_WIDTH-1):0] AxID               = 0
+  parameter logic [23:0]               STREAM_ID          = 24'd1,
+  parameter logic [3:0]                NSAID              =  4'd1,
+  parameter logic [(AXI_ID_WIDTH-1):0] AxID               =     0
 ) (
   input  logic         clk_i,
   input  logic         rst_ni,
   input  logic         testmode_i,
-  AXI_BUS_IOMMU.Master axi_master,
+  AXI_BUS_EXT.Master   axi_master,
   AXI_BUS.Slave        axi_slave
 );
 
@@ -312,13 +315,19 @@ module dma_core_wrap_intf #(
 
   // Manually assign IOMMU-related signals
   // AW
-  assign axi_master.aw_stream_id     = DEVICE_ID;
+  assign axi_master.aw_stream_id     = STREAM_ID;
   assign axi_master.aw_ss_id_valid   = 1'b0;
   assign axi_master.aw_substream_id  = 20'b0;
   // AR
-  assign axi_master.ar_stream_id     = DEVICE_ID;
+  assign axi_master.ar_stream_id     = STREAM_ID;
   assign axi_master.ar_ss_id_valid   = 1'b0;
   assign axi_master.ar_substream_id  = 20'b0;
+
+  // Manually assign IOPMP-specific signals
+  // AW
+  assign axi_master.aw_nsaid     = NSAID;
+  // AR
+  assign axi_master.ar_nsaid     = NSAID;
 
   dma_core_wrap #(
     .AxiAddrWidth     ( AXI_ADDR_WIDTH     ),
@@ -327,6 +336,7 @@ module dma_core_wrap_intf #(
     .AxiIdWidth       ( AXI_ID_WIDTH       ),
     .AxiSlvIdWidth    ( AXI_SLV_ID_WIDTH   ),
     .JobFifoDepth     ( JOB_FIFO_DEPTH     ),
+    .BufferDepth      ( BUFFER_DEPTH       ),
     .NumAxInFlight    ( NUM_AX_IN_FLIGHT   ),
     .MemSysDepth      ( MEM_SYS_DEPTH      ),
     .RAWCouplingAvail ( RAW_COUPLING_AVAIL ),
